@@ -1,0 +1,3 @@
+{Setting}=<Parametr>
+Model=qwen3:8b
+CPU=4
