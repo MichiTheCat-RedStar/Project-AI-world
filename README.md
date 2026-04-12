@@ -1,0 +1,3 @@
+> [Click to see old readme](https://github.com/MichiTheCat-RedStar/Project-AI-world/blob/864c1e224b59a7d0e063717ffca929af7b760fb3/ReadMe.txt), new readme is writting...
+
+[Telegram](https://t.me/TeaTechnology) | [GitHub](https://github.com/MichiTheCat-RedStar) | [Itch.io](https://michi-the-cat.itch.io)
