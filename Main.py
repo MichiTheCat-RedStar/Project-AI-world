@@ -3,16 +3,20 @@
 # Оригинал кода https://github.com/MichiTheCat-RedStar/Project-AI-world
 
 
-# Инициализация
+# Инициализация (для кода)
 
 try: # Библиотеки
     print('- Импорт библиотек...', end='', flush=True)
     import ollama
     import os
+    try:
+        import tomllib
+    except ModuleNotFoundError:
+        import tomli as tomllib # pip install tomli если ваш python не имеет tomlib
 except Exception as error:
     print(f'\r! Импорт библиотек не завершён! Ошибка: {error}')
 else:
-    print('\r+ Имопрт библиотек завершён.')
+    print('\r+ Импорт библиотек завершён.')
 
 try: # Проверка целостности                     v какой файл | действие при повреждении
     print('- Проверка файлов...', end='', flush=True)
@@ -39,25 +43,50 @@ else:
 
 try: # Загрузка переменных из настроек (settings.toml)      TODO: Сделать загрузку settings.toml
     print('- Инициализация настроек...', end='', flush=True)
+    # TODO: ------------------------------------------------^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    WorldSize = {
+        'X': 16,
+        'Y': 8 }
 except Exception as error:
     print(f'\r! Инициализация настроек не завершена! Ошибка: {error}')
 else:
     print('\r+ Инициализация настроек завершена.')
 
-try: # Загрузка промптов (prompts.toml)                     TODO: Сделать загрузку prompts.toml
+try: # Загрузка промптов (prompts.toml)
     print('- Инициализация промптов...', end='', flush=True)
     Prompts = {     # TODO: Сделать из prompts.toml звгрузку переменных в словарь
         'believer': None,
-        'atheistic': None
-    }
+        'atheistic': None,
+        'instruction': None }
+    with open('prompts.toml', 'rb') as file:
+        file = tomllib.load(file)
+        Prompts['believer'] = str(file['Believer']).strip()
+        Prompts['atheistic'] = str(file['Atheistic']).strip()
+        Prompts['instruction'] = str(file['Instruction']).strip()
 except Exception as error:
     print(f'\r! Инициализация промптов не завершена! Ошибка: {error}')
 else:
     print('\r+ Инициализация промптов завершена.')
 
 
+# Инициализация (для мира)
+
+World = []
+for y in range(WorldSize['Y']):
+    World.append([])
+    for x in range(WorldSize['X']):
+        World[y].append('.')
+
+def Show() -> None:
+    'Функция для отображения всего поля `World`'
+    for y in World:
+        print(''.join([str(x) for x in y]))
+
 # Основной цикл
 
 print('\nНажмите Ctrl+C для выхода...')
+
 while True:
-    pass    # TODO: Доделать
+    # TODO: Доделать
+    try: input()
+    except KeyboardInterrupt: quit()
