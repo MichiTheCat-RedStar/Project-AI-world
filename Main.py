@@ -9,6 +9,7 @@ try: # Библиотеки
     print('- Импорт библиотек...', end='', flush=True)
     import ollama
     import os
+    from time import sleep
     try:
         import tomllib
     except ModuleNotFoundError:
@@ -74,7 +75,7 @@ else:
 
 # Инициализация (для мира)
 
-World = []
+World, step = [], 0
 for y in range(WorldSize['Y']):
     World.append([])
     for x in range(WorldSize['X']):
@@ -86,11 +87,64 @@ def Show() -> None:
         print(''.join([str(x) for x in y]))
 
 
+# Инициализация (AI NPC)
+
+NPCs = []
+
+class NPC: # TODO: я всё ещё не понимаю полностью принцип классов и этого ООП, а только тыкаю на угад "Правильно ли?"...
+    'AI NPC создания мира'
+    def __init__(self, prompt:str):
+        '`prompt` должно быть задано "believer" или "atheistic"' # TODO доработать в будущем
+        self.health = 10        # Здоровье
+        self.hunger = 10        # Голод
+        self.prompt = prompt    # Промпт
+        self.alive = True       # Живой?
+
+    def Touch(self) -> None:
+        'Функция, чтобы обновить сущность на один тик'
+        if self.alive:
+            self.hunger -= 1
+            if self.hunger < 1:
+                self.health -= 1
+            if self.hunger < 0:
+                self.hunger = 0
+            if self.health < 1:
+                self.alive = False
+
+
 # Основной цикл
 
-print('\nНажмите Ctrl+C для выхода...')
+print('\nНажмите Ctrl+C для вызова консоли...')
 
+a = NPC('believer')
 while True:
-    # TODO: Доделать
-    try: input()
-    except KeyboardInterrupt: quit()
+    try:
+        step += 1
+        print(f'\nДля меню нажмите Ctrl+C | Шаг: {step}')
+        Show()
+        sleep(1)
+        # NPC.Touch(a)
+        a.Touch()   # TODO тут поле для эксперементов, данный код будет полностью изменён в будущем (речь о работе с классом, а не обработке Ctrl+C)
+        # a.hunger -= 1
+        print(a.hunger)
+    except KeyboardInterrupt: # Ctrl+C меню
+        print('\nКонсоль взвана, пропишите "help" для помощи...')
+        while True:
+            User = input('\n> ').strip().lower()
+            if User == '':
+                pass
+            elif User == 'back':
+                break
+            elif User == 'exit':
+                print('Удачи!')
+                quit()
+            elif User == 'help':
+                print('''
+back - выйти из Ctrl+C меню
+exit - выйти из программы
+help - список всех команд
+                      '''.strip())
+            else:
+                print(f'"{User}" не является встроенной командой!')
+    except Exception as error:
+        input(f'\nОшибка: {error}\n[Нажмите ENTER чтобы продолжить]')
