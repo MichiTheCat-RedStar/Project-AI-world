@@ -41,12 +41,17 @@ except Exception as error:
 else:
     print('\r+ Проверка файлов завершена.')
 
-try: # Загрузка переменных из настроек (settings.toml)      TODO: Сделать загрузку settings.toml
+try: # Загрузка переменных из настроек (settings.toml)
     print('- Инициализация настроек...', end='', flush=True)
-    # TODO: ------------------------------------------------^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    WorldSize = {
-        'X': 16,
-        'Y': 8 }
+    with open('settings.toml', 'rb') as file: # settings.toml/...
+        data = tomllib.load(file)
+        WorldSize = { # ./codespace/world_{xy} -> WorldSize['{XY}']
+            'X': int(data['codespace']['world_x']),
+            'Y': int(data['codespace']['world_y']) }
+        ModelSettings = { # ./model/... -> ModelSettings[*]
+            'model': str(data['model']['model']),   # ./model -> ModelSettings['model']
+            'CPU': int(data['model']['CPU']) }      # ./CPU -> ModelSettings['CPU']
+        del data
 except Exception as error:
     print(f'\r! Инициализация настроек не завершена! Ошибка: {error}')
 else:
@@ -54,15 +59,13 @@ else:
 
 try: # Загрузка промптов (prompts.toml)
     print('- Инициализация промптов...', end='', flush=True)
-    Prompts = {     # TODO: Сделать из prompts.toml звгрузку переменных в словарь
-        'believer': None,
-        'atheistic': None,
-        'instruction': None }
-    with open('prompts.toml', 'rb') as file:
-        file = tomllib.load(file)
-        Prompts['believer'] = str(file['Believer']).strip()
-        Prompts['atheistic'] = str(file['Atheistic']).strip()
-        Prompts['instruction'] = str(file['Instruction']).strip()
+    with open('prompts.toml', 'rb') as file: # prompts.toml/...
+        data = tomllib.load(file)
+        Prompts = {
+            'believer': str(data['Believer']).strip(),          # Believer
+            'atheistic': str(data['Atheistic']).strip(),        # Atheistic
+            'instruction': str(data['Instruction']).strip() }   # Instruction
+        del data
 except Exception as error:
     print(f'\r! Инициализация промптов не завершена! Ошибка: {error}')
 else:
@@ -81,6 +84,7 @@ def Show() -> None:
     'Функция для отображения всего поля `World`'
     for y in World:
         print(''.join([str(x) for x in y]))
+
 
 # Основной цикл
 
